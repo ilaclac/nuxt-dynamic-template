@@ -41,7 +41,7 @@ export default defineNuxtConfig({
 	css: ["~/assets/css/tailwind.css"],
 	routeRules: {
 		"/": { isr: 60 },
-		"/blog": { isr: 300 },
+		"/blog/**": { isr: 300 },
 		"/posts/**": { isr: 300 },
 		"/ssr-example": { ssr: true },
 		"/ssg-example": { prerender: true },

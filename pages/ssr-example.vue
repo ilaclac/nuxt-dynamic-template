@@ -1,11 +1,14 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  $END$
+	<section>
+		<h1 class="text-2xl font-bold">
+			SSR example
+		</h1>
+		<p class="opacity-70">
+			This page always renders on the server.
+		</p>
+	</section>
 </template>
 
-<style scoped>
-
-</style>
+<script setup lang="ts">
+definePageMeta({ ssr: true });
+</script>

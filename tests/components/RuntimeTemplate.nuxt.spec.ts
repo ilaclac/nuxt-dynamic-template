@@ -1,70 +1,79 @@
-// Import test utilities from the Nuxt-provided #vitest alias.
-// This ensures you're using the Vitest instance configured by Nuxt.
-import { describe, it, expect, afterEach, vi } from "#vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+import { defineComponent } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import { defineComponent, nextTick } from "vue";
-import * as compiler from "@vue/compiler-dom";
-
-// All aliases like `~/` work out-of-the-box.
 import RuntimeTemplate from "~/components/RuntimeTemplate.vue";
 import { RUNTIME_TPL_CACHE_KEY } from "~/lib/constants";
 
-const MockCustomCard = defineComponent({
-	template: `
-    <div class="mock-card">
-      <h2>{{ title }}</h2>
-      <p>{{ description }}</p>
-    </div>
-  `,
-	props: {
-		title: String,
-		description: String,
-	},
+beforeEach(() => {
+	// reset global cache between tests
+	;(globalThis as Record<string, unknown>)[RUNTIME_TPL_CACHE_KEY] = new Map<string, unknown>();
 });
 
-afterEach(() => {
-	const global = globalThis as Record<string, unknown>;
-	if (global[RUNTIME_TPL_CACHE_KEY]) {
-		(global[RUNTIME_TPL_CACHE_KEY] as Map<string, unknown>).clear();
-	}
-});
-
-describe("RuntimeTemplate.vue", () => {
-	it("renders a component from a template string with initial scope", async () => {
-		const template = `<MockCustomCard :title="cardTitle" :description="cardDesc" />`;
-		const scope = {
-			cardTitle: "Hello from Scope",
-			cardDesc: "This is a test.",
-		};
-
+describe("RuntimeTemplate (Nuxt env)", () => {
+	it("renders \"No template\" when empty", async () => {
 		const wrapper = await mountSuspended(RuntimeTemplate, {
-			props: {
-				template,
-				scope,
-				components: { MockCustomCard },
-			},
+			props: { template: "", scope: {} },
 		});
-
-		expect(wrapper.find("h2").text()).toBe("Hello from Scope");
-		expect(wrapper.find("p").text()).toBe("This is a test.");
+		expect(wrapper.text()).toContain("No template");
 	});
 
-	it("reacts to changes in the scope prop", async () => {
-		const template = `<MockCustomCard :title="title" />`;
-		const initialScope = { title: "Initial Title" };
+	it("interpolates from scope", async () => {
+		const wrapper = await mountSuspended(RuntimeTemplate, {
+			props: { template: `<div data-test="greet">Hello {{ name }}</div>`, scope: { name: "Ivan" } },
+		});
+		expect(wrapper.get("[data-test=\"greet\"]").text()).toBe("Hello Ivan");
+	});
+
+	it("renders allow-listed component and passes inline JSON props", async () => {
+		const TestChip = defineComponent({
+			name: "TestChip",
+			props: {
+				label: { type: String, default: "" },
+				config: { type: Object, default: () => ({}) },
+			},
+			template: `<span data-test="chip">{{ label }}-{{ config?.a }}</span>`,
+		});
 
 		const wrapper = await mountSuspended(RuntimeTemplate, {
 			props: {
-				template,
-				scope: initialScope,
-				components: { MockCustomCard },
+				template: `<TestChip :label="'Hi'" :config='{"a":1}' />`,
+				scope: {},
+				components: { TestChip },
 			},
 		});
 
-		expect(wrapper.find("h2").text()).toBe("Initial Title");
+		expect(wrapper.get("[data-test=\"chip\"]").text()).toBe("Hi-1");
+	});
 
-		await wrapper.setProps({ scope: { title: "Updated Title" } });
-		await nextTick();
-		expect(wrapper.find("h2").text()).toBe("Updated Title");
+	it("updates when scope changes (no recompile)", async () => {
+		const wrapper = await mountSuspended(RuntimeTemplate, {
+			props: { template: `<div data-test="count">{{ count }}</div>`, scope: { count: 1 } },
+		});
+		expect(wrapper.get("[data-test=\"count\"]").text()).toBe("1");
+
+		await wrapper.setProps({ scope: { count: 2 } });
+		expect(wrapper.get("[data-test=\"count\"]").text()).toBe("2");
+	});
+
+	it("rebuilds when the template string changes", async () => {
+		const wrapper = await mountSuspended(RuntimeTemplate, {
+			props: { template: `<div data-test="msg">A</div>`, scope: {} },
+		});
+		expect(wrapper.get("[data-test=\"msg\"]").text()).toBe("A");
+
+		await wrapper.setProps({ template: `<div data-test="msg">B</div>` });
+		expect(wrapper.get("[data-test=\"msg\"]").text()).toBe("B");
+	});
+
+	it("caches compiled templates (same template => one cache entry)", async () => {
+		const templateData = `<div>Cached</div>`;
+		const w1 = await mountSuspended(RuntimeTemplate, { props: { template: templateData, scope: {} } });
+		const w2 = await mountSuspended(RuntimeTemplate, { props: { template: templateData, scope: {} } });
+
+		const cache = (globalThis as Record<string, unknown>)[RUNTIME_TPL_CACHE_KEY] as Map<string, unknown>;
+		expect(cache.size).toBe(1);
+
+		w1.unmount();
+		w2.unmount();
 	});
 });

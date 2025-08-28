@@ -1,75 +1,46 @@
-# Nuxt Minimal Starter
+# Nuxt 3 – Dynamic Template Demo
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 3 app that fetches a **Vue template string** from a Nitro API and renders it at runtime. The template includes a **custom component**, **props**, and an **inline JSON prop**. The app is ready for **ISR** and deploys cleanly to **Vercel**.
 
-## Setup
+## What I implemented
+- **Runtime renderer**: `components/RuntimeTemplate.vue` compiles a template string on the **client** and renders only **allow-listed** components.
+- **API**: `GET /api/template?kind=card|hero|badge` returns `{ template, scope }` with **Zod-typed** scopes.
+- **Examples**:
+    - `card` → informational `CustomCard` (title/description/CTA/links/stats)
+    - `hero` → `CustomHero` using `@nuxt/image`
+    - `badge` → `CustomBadge` with **inline JSON prop** (e.g. `:meta='{"track":true}'`)
+- **UI/State**: Tailwind v4 + shadcn, Pinia theme toggle with no-flash init.
+- **Content**: Blog via `@nuxt/content` (`/blog`, `/posts/:id`).
+- **ISR** (in `nuxt.config`): `/` 60s, `/blog` 300s, `/posts/**` 300s; plus SSR/SSG examples.
 
-Make sure to install dependencies:
-
-```bash
-# npm
+## Run locally
+```
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+### Tests
 
-Build the application for production:
+Unit tests run in the Nuxt test runtime:
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```
+npm run test
 ```
 
-Locally preview production build:
+### Helpful scripts
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+```
+{
+  "dev": "nuxt dev",
+  "build": "nuxt build",
+  "preview": "nuxt preview",
+  "generate": "nuxt generate",
+  "lint": "eslint .",
+  "lint:fix": "eslint . --fix",
+  "test": "vitest"
+}
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Live URL: 
+To be added.
+

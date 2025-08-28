@@ -1,4 +1,3 @@
-<!-- components/CustomHero.vue -->
 <template>
 	<section class="rounded-2xl border p-6 grid gap-6 md:grid-cols-[1fr,320px] items-center">
 		<div>

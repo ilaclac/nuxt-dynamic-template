@@ -1,4 +1,3 @@
-<!-- components/CustomCard.vue -->
 <template>
 	<Card :class="accentClass">
 		<CardHeader class="pb-2">

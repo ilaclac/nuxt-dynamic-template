@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 		"@nuxt/eslint",
 		"@nuxt/test-utils/module",
 	],
+	devtools: { enabled: import.meta.dev },
 	app: {
 		head: {
 			htmlAttrs: { lang: "en" },

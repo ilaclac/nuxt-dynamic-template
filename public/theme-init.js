@@ -14,6 +14,10 @@
         root.setAttribute('data-theme', theme);
         root.classList.toggle('dark', theme === 'dark');
 
+        if (!fromCookie || fromCookie !== theme) {
+            document.cookie = 'theme=' + theme + '; Path=/; Max-Age=31536000; SameSite=Lax';
+        }
+
         requestAnimationFrame(function(){ requestAnimationFrame(function(){ st.remove(); }); });
     } catch(e) {}
 })();

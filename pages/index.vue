@@ -36,12 +36,12 @@ useSeoMeta({
 			Home (ISR 60s)
 		</h1>
 
-		<div class="mb-2 opacity-80">
+		<div class="mb-6 opacity-80">
 			Try rendering different components:
 		</div>
 
 		<div class="text-xl">
-			<div class="flex justify-center">
+			<div class="flex justify-center flex-wrap">
 				<NuxtLink
 					to="/"
 					:class="[

@@ -44,8 +44,8 @@ export default defineNuxtConfig({
 	},
 	routeRules: {
 		"/": { isr: 60 },
-		"/about": { isr: 60 },
-		"/contact": { isr: 60 },
+		"/about/**": { isr: 60 },
+		"/contact/**": { isr: 60 },
 		"/blog/**": { isr: 300 },
 		"/posts/**": { prerender: true },
 		"/ssr-example": { ssr: true },

@@ -39,12 +39,16 @@ export default defineNuxtConfig({
 		},
 	},
 	css: ["~/assets/css/tailwind.css"],
+	vue: {
+		runtimeCompiler: true,
+	},
 	routeRules: {
 		"/": { isr: 60 },
+		"/about": { isr: 60 },
+		"/contact": { isr: 60 },
 		"/blog/**": { isr: 300 },
-		"/posts/**": { isr: 300 },
+		"/posts/**": { prerender: true },
 		"/ssr-example": { ssr: true },
-		"/ssg-example": { prerender: true },
 	},
 	compatibilityDate: "2025-07-15",
 	vite: {
@@ -63,7 +67,7 @@ export default defineNuxtConfig({
 		},
 	},
 	image: {
-		domains: ["images.unsplash.com"],
+		domains: ["picsum.photos", "i.pravatar.cc"],
 	},
 	shadcn: {
 		prefix: "",

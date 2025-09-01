@@ -6,7 +6,27 @@
 					to="/"
 					class="font-semibold p-2 hover:underline"
 				>Home</NuxtLink>
-				<nav class="flex items-center gap-4">
+				<nav class="flex flex-wrap items-center gap-4">
+					<Button
+						as-child
+						variant="outline"
+						class="h-8 px-3"
+					>
+						<NuxtLink
+							to="/about"
+							class="hover:underline"
+						>About</NuxtLink>
+					</Button>
+					<Button
+						as-child
+						variant="outline"
+						class="h-8 px-3"
+					>
+						<NuxtLink
+							to="/contact"
+							class="hover:underline"
+						>Contact</NuxtLink>
+					</Button>
 					<Button
 						as-child
 						variant="outline"
@@ -23,9 +43,9 @@
 						class="h-8 px-3"
 					>
 						<NuxtLink
-							to="/ssr-example"
+							to="/posts"
 							class="hover:underline"
-						>SSR</NuxtLink>
+						>Posts</NuxtLink>
 					</Button>
 					<Button
 						as-child
@@ -33,11 +53,10 @@
 						class="h-8 px-3"
 					>
 						<NuxtLink
-							to="/ssg-example"
+							to="/ssr-example"
 							class="hover:underline"
-						>SSG</NuxtLink>
+						>SSR</NuxtLink>
 					</Button>
-
 					<ThemeToggle />
 				</nav>
 			</div>
